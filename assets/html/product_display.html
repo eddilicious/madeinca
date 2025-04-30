@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Product Description</title>
+  <style>
+    /* Canadian Theme */
+    .maple body {
+      font-family: Arial, sans-serif;
+      background: #F2E6D8; /* Warm Beige */
+      color: #5A5A5A; /* Slate Gray */
+      margin: 20px;
+      padding: 20px;
+    }
+    .maple .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+      border-radius: 10px;
+      background: white;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .maple .title {
+      font-size: 28px;
+      font-weight: bold;
+      text-align: center;
+      text-transform: uppercase;
+      justify-content: center;
+      gap: 10px;
+      background: linear-gradient(90deg, #C8102E, #D45D00); /* Maple Red & Rust Orange */
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    }
+    .maple .description {
+      font-size: 36px;
+      text-align: justify;
+      line-height: 1.6;
+      background: rgba(200, 150, 100, 0.1);
+      padding: 15px;
+      border-radius: 8px;
+      border-left: 5px solid #D45D00; /* Rust Orange */
+      margin-bottom: 20px;
+    }
+    .maple .images {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    .maple .images img {
+      width: 30%;
+    max-width: 300px;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    .maple .offers {
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 8px;
+      background: rgba(200, 150, 100, 0.1);
+    }
+    .maple .offer {
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 32px;
+      background: #F2E6D8; /* Warm Beige */
+    }
+    .maple .offer a {
+      display: inline-block;
+      margin-top: 5px;
+      background: #C8102E; /* Maple Red */
+      color: white;
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      font-weight: bold;
+      font-size: 32px;
+      transition: 0.3s;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    .maple .offer a:hover {
+      background: #A00A23; /* Darker Red */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    /* Light Theme */
+		.light body {
+			font-family: Arial, sans-serif;
+			margin: 20px;
+      margin-top: 50px;
+			padding: 20px;
+			background-color: #f8f8f8;
+		}
+		.light .container {
+			max-width: 900px;
+			margin: auto;
+			background: white;
+			padding: 20px;
+			border-radius: 8px;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		}
+    .light .title {
+			font-size: 48px;
+			font-weight: bold;
+			text-align: center;
+			text-transform: uppercase;
+      justify-content: center;
+      background: linear-gradient(90deg, #555, #888);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+			letter-spacing: 1px;
+			margin-bottom: 15px;
+		}
+
+		.light .description {
+			font-size: 36px;
+			color: #444;
+			text-align: justify;
+			line-height: 1.6;
+      background: rgba(200, 200, 200, 0.1);
+      border-left: 5px solid #888;
+			padding: 15px;
+			border-radius: 8px;
+			box-shadow: inset 0 0 10px rgba(181, 165, 141, 0.1);
+		}
+		.light .images {
+			display: flex;
+			gap: 10px;
+			flex-wrap: wrap;
+			margin-top: 15px;
+		}
+		.light .images img {
+			width: auto;
+			max-width: 300px;
+			height: auto;
+			border-radius: 6px;
+		}
+		.images img:hover {
+			transform: scale(1.05);
+		}
+    .light .offers {
+      background: #ececec;
+			margin-top: 20px;
+			padding-top: 10px;
+			border-top: 1px solid #ddd;
+		}
+		.light .offer {
+      background: #ddd;
+			padding: 10px;
+      font-size: 32px;
+			border-radius: 6px;
+			margin-bottom: 10px;
+		}
+    .light .offer a {
+      display: inline-block;
+      margin-top: 5px;
+      color: white;
+      background: #888; /* Soft Neutral Gray */
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      font-weight: bold;
+      font-size: 32px;
+      transition: 0.3s;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    .light .offer a:hover {
+        background: #555; /* Darker Gray */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+
+		.origin-box {
+			display: flex;
+      flex-direction: column; /* Stack items vertically */
+      position: absolute;
+      top: 10vh; /* 2/3 from the top */
+      left: 50%; /* Start at the center */
+			padding: 10px 20px;
+			border: 4px solid #D32F2F; /* Stamp-like red border */
+			border-radius: 15px;
+			text-transform: uppercase; /* Stamps usually use uppercase */
+			font-weight: bold;
+			font-size: 2rem;
+			color: #D32F2F; /* Stamp text matches border */
+			background-color: rgba(255, 255, 255, 0.5);
+      margin: 20px; /* Add margin to keep away from edges */
+      max-width: calc(100vw - 40px); /* Ensure it doesn't touch edges */
+		}    
+    .origin-title {
+      font-weight: bold;
+      font-size: 4rem;
+      text-align: center;
+    }
+
+    .origin-content {
+      align-self: flex-start;
+      font-size: 3rem;
+      text-align: center;
+      word-wrap: break-word; /* Ensures long words break properly */
+      overflow-wrap: break-word; /* Modern alternative */
+    }
+
+</style>
+  <script src="../js/confetti.js"></script>
+</head>
+<body class="light">
+  <div class="container" id="product-detail">
+    <h2 class="title" id="product-title"></h2>
+    <h2 class="title" id="product-ean"></h2>
+    <p class="description" id="product-description"></p>
+    
+    <div class="images" id="product-images"></div>
+
+    <div class="offers" id="product-offers"></div>
+  </div>
+  <div class="container" id="company-gs1">
+    <h2 class="title" id="company-title"></h2>
+    <p class="description" id="company-name"></p>
+    <p class="description" id="company-address"></p>
+    <p class="description" id="company-web"></p>
+    <h2 class="title" id="company-gln"></h2>
+  </div>
+<div class="origin-box">
+  <div id="origin-label" class="origin-title"></div>
+  <div id="origin-country" class="origin-content"></div>
+</div>
+
+<script>
+    function isHtml(content) {
+      const regex = /<\/?[a-z][\s\S]*>/i;
+      return regex.test(content);  // Returns true if HTML tags are found
+    }
+    function displayProductContent(item) {
+      // Show product div otherwise the child elements will not be rendered
+      document.getElementById("product-detail").style.display = "block"; // Show div
+      document.getElementById("company-gs1").style.display = "none"; // Hide div
+
+      var windowWidth = window.innerWidth; // Get the width of the window
+      var imageWidth = windowWidth * 0.3; // Set image width to 80% of the window width
+
+      // Update title and description
+      document.getElementById("product-title").textContent = item.title || "Unknown Product";
+      if (isHtml(item.description)) {
+        document.getElementById("product-description").innerHTML = item.description;
+      } else {
+        document.getElementById("product-description").textContent = item.description;
+      }
+
+      // For Developer Testing, Comment out in Production
+      //document.getElementById("product-ean").textContent = item.ean || "No EAN";
+
+      // Display images
+      let imagesDiv = document.querySelector("#product-images");
+      imagesDiv.innerHTML = ""; // Clear previous content
+      if (item.images && item.images.length > 0) {
+          item.images.forEach(function(imageUrl) {
+              var img = document.createElement("img");
+              img.src = imageUrl;
+              //img.style.width = imageWidth + 'px'; // Set the image width
+              //img.style.height = 'auto'; // Maintain aspect ratio
+              img.alt = "Product Image";
+              imagesDiv.appendChild(img);
+          });
+      }
+
+      // Display offers
+      var offersDiv = document.getElementById("product-offers");
+      offersDiv.innerHTML = ""; // Clear previous content
+      if (item.offers && item.offers.length > 0) {
+          item.offers.forEach(function(offer) {
+              var offerDiv = document.createElement("div");
+              offerDiv.className = "offer";
+              
+              if (offer.merchant == 'none') {
+                offerDiv.innerHTML = `<table style="width: 100%; border-collapse: collapse;">
+                                    <tr><td style="width: 50%; padding: 0px;">
+                                    <p> ${offer.title} </p>
+                                    </td></tr><tr><td style="width: 50%; text-align: right; padding: 0px; vertical-align: top;">
+                                    <a href="${offer.link}">Find Company</a>
+                                    </td></tr></table>`;
+              } else {
+                offerDiv.innerHTML = `<table style="width: 100%; border-collapse: collapse;">
+                                    <tr><td style="width: 50%; padding: 0px;">
+                                    <p><strong>Merchant:</strong> ${offer.merchant} <br>
+                                    <strong>Price:</strong> ${offer.price} <br>
+                                    <strong>Condition:</strong> ${offer.condition}</p>
+                                    </td><td style="width: 50%; text-align: right; padding: 0px; vertical-align: bottom;">
+                                    <a href="${offer.link}">View Offer</a>
+                                    </td></tr></table>`;
+              }
+              
+              offersDiv.appendChild(offerDiv);
+          });
+      }
+    }
+
+    function displayCompanyContent(item) {
+      document.getElementById("company-gs1").style.display = "block"; // Show div
+      document.getElementById("product-detail").style.display = "none"; // Hide div
+
+      var windowWidth = window.innerWidth; // Get the width of the window
+      var imageWidth = windowWidth * 0.3; // Set image width to 80% of the window width
+
+      // Update title and description
+      document.getElementById("company-title").textContent = "Company Information";
+      document.getElementById("company-name").innerHTML = `<table border=0><tr><td style="vertical-align: top;">Company: </td><td>${item["Company"] || "No Title Available"}</td></tr></table>`;
+      document.getElementById("company-address").innerHTML = `<table border=0><tr style="vertical-align: top;"><td>Address: </td><td>${(item["Address"] ? String(item["Address"]).replace(/,/g, "<br>") : "No Description Available")}</td></tr></table>`;
+      if (item['Website'] !== undefined && item["Website"] !== ""  && item["Website"].toLowerCase() !== "unknown") {
+        document.getElementById("company-web").innerHTML = `<table border=0><tr><td>Website: </td><td><a href="${item['Website']}" target="_blank">Visit Website</a></td></tr></table>`;
+      } else {
+        document.getElementById("company-web").style.display = "none"; // Hide div
+      }
+
+      // For Developer Testing, Comment out in Production
+      document.getElementById("company-gln").textContent = item.gln || "No Global Location Number";
+
+    }
+
+    function viewConfetti(json) {
+      var labelDiv = document.getElementById("origin-label");
+      var contentDiv = document.getElementById("origin-country");
+
+      if (json.made !== undefined) {
+        if (labelDiv) {
+          if ("description" in json) {
+            labelDiv.textContent = "Made in";
+          } else if ("Company" in json || "Address" in json) {
+            labelDiv.textContent = "Company Origin";
+          }
+        }
+
+        if (json.made.toLowerCase() === "canada" || json.made.toLowerCase() === "ca") {
+          if (contentDiv) contentDiv.textContent = 'Canada';
+          document.body.className = 'maple'; // Apply Canadian theme
+          checkInterval = setInterval(() => {
+            if (window.innerWidth * window.innerHeight !== 0) {
+                clearInterval(checkInterval); // Stop checking
+                startConfetti();
+                return;
+            }}, 500);  
+            return;    
+        } else if (json.made.toLowerCase() === "united states" || json.made.toLowerCase() === "us" || json.made.toLowerCase() === "usa") {
+          if (contentDiv) contentDiv.textContent = 'United States';
+
+          startMean();
+          return;
+        } else if (json.made.toLowerCase() != "idk") {
+          if (contentDiv) contentDiv.innerHTML = json.made; 
+          startIDK();
+          return;
+        }
+      }
+
+      if (labelDiv) labelDiv.textContent = "Ambiguous Origin";
+      if (contentDiv) {
+        contentDiv.innerHTML = 'Please look for <strong>Made in Canada</strong> or <strong>Product of Canada</strong> on the packaging.'; // Clear previous content
+        labelDiv.style.fontSize = '2.5rem';
+        contentDiv.style.fontSize = '2rem';
+        contentDiv.style.textAlign = 'left';
+      }
+      startIDK();
+      
+    }
+
+    // Listen for messages from Flutter
+// message event listener
+    window.addEventListener("message", (event) => {
+      var container = document.getElementById('json-container');
+      var jsonData = JSON.parse(event.data);
+      if (jsonData === undefined) {
+        container.innerHTML = "Invalid data received";
+        return;
+      } else if (jsonData === null) {
+        container.innerHTML = "No data received";
+        return;      
+      } else if ("description" in jsonData) {
+        displayProductContent(jsonData);
+      } else if ("Company" in jsonData || "Address" in jsonData) {
+        displayCompanyContent(jsonData);
+      } else {
+        return;
+      }
+      
+      viewConfetti(jsonData);
+    });
+  </script>
+</body>
+</html>

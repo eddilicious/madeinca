@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading...</title>
+    <style>
+        /* Reset default styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Full-screen loading container */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #101010;
+        }
+
+        /* SVG size */
+        .loading-svg {
+          filter: invert(50%); /* Turns black to white */
+          fill: blue;
+          width: 100px;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <!-- SVG loading icon -->
+    <img src="../gifs/bars-rotate-fade.svg" alt="Loading..." class="loading-svg">
+</body>
+</html>

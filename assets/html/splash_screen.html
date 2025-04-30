@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Splash Screen</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000;
+            color: #D52B1E; /* Traditional maple leaf color */
+            font-family: Roboto Condensed, sans-serif;
+            text-align: center;
+			width: 100%;
+			height: 100vh; /* Full screen height */
+			
+			background-image: url('../images/background9.png'); /* Set background image */
+			background-size: cover; /* Cover entire screen */
+			background-position: center; /* Center the image */
+			background-repeat: no-repeat; /* No repeating */
+        }
+        .splash-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+        }
+        .logo {
+            width: 100%;
+            margin-bottom: 5px;
+			  position: absolute;
+			  top: 40vh; /* 2/3 from the top */
+        }
+		.logo-image {
+			width:auto;
+			height:50vh;
+		}
+        .slogan {
+            font-size: 1.5rem;
+            font-weight: bold;
+			-webkit-text-stroke: 0px white; /* Works in iOS Safari */
+			text-shadow: 2px 2px 4px rgba(1, 1, 1, 0.5); /* Optional shadow */
+            letter-spacing: 2px;
+            opacity: 0;
+            position: absolute;
+            width: 100%;
+			top: 27vh;
+            transition: opacity 1s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="splash-container">
+    </div>
+    <div id="slogan" class="slogan"></div>
+    <div class="logo"><img src="../images/canadian.beaver.only.png" alt="Logo" class="logo-image"></div>
+    <script>
+		const sloganSets = [
+			["WE CANADIAN", "BUY CANADIAN"],
+			["BEAVERS ARE THE BEST", "NOT A 51st"],
+			["WE THE NORTH", "STRONG TOGETHER"]
+		];
+		
+        let index = 0;
+		// Randomly pick one set of slogans
+		const slogans = sloganSets[Math.floor(Math.random() * sloganSets.length)];
+        const sloganElement = document.getElementById('slogan');
+
+        function showSlogans() {
+            if (index < slogans.length) {
+                sloganElement.textContent = slogans[index];
+                sloganElement.style.opacity = 0.9;
+                setTimeout(() => {
+                    sloganElement.style.opacity = 0;
+                    setTimeout(() => {
+                        index++;
+                        showSlogans();
+                    }, 2500);
+                }, 1500);
+            }
+        }
+        
+        window.onload = showSlogans;
+    </script>
+</body>
+</html>
+

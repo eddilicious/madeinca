@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Elegance</title>
+    <style>
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Background Styling */
+        body {
+            display: flex;
+            justify-content: flex-start; /* Align content to the top-left */
+            align-items: center; /* Center vertically */
+            height: 100vh;
+            background: linear-gradient(to bottom, #f7ebe5, #e8d6ca); /* Warm neutral with a soft blush tone */
+            color: #4A3F35; /* Deep warm brown for readability */
+            font-family: "Inter", sans-serif;
+            padding: 20px;
+        }
+
+        /* Text Container */
+        .text-container {
+            width: 90vw;
+            height: 90vh;
+            display: flex;
+			position: relative;
+            flex-direction: column;
+            justify-content: flex-start;
+            text-align: flex-start;
+            padding: 24px;
+            background: rgba(255, 250, 240, 0.8); /* Soft glass effect */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Subtle depth */
+            border-radius: 16px;
+            backdrop-filter: blur(12px);
+        }
+
+        /* Modern Typography */
+        .text-container h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .text-container p {
+            font-size: 1.2rem;
+            font-weight: 400;
+            line-height: 1.5;
+            opacity: 0.85;
+        }
+
+		.continue-text {
+			position: absolute;
+			bottom: 20px;
+			left: 50%;
+			transform: translateX(-50%);
+			opacity: 0; /* Initially hidden */
+			transition: opacity 10s ease-in-out;
+			white-space: nowrap; /* Prevents text from breaking into two lines */
+		}
+
+    </style>
+</head>
+<body>
+    <div class="text-container">
+        <p id="text"><span id="TextTyping"></span><span id="cursor">|</span></p>
+		<p class="continue-text">- Tap Anywhere to Continue -</p>
+    </div>
+    <script>
+        const paragraphText = [
+            "Thank you for downloading! We know you care, want to help Canadian businesses, workers, and communities. Your support will make the country strong!",
+            "Every time you use the app, you are making a choice to keep jobs here, to back local innovation. A choice to discover the best of Canada - one product at a time!",
+			"If you love what we are doing? Please share our app with your friends. Together, we help our community and economy!"
+        ];
+
+        let textEl = document.getElementById("TextTyping");
+        let cursorEl = document.getElementById("cursor");
+
+        function typeText(element, text, speed, callback) {
+            let i = 0;
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text[i];
+                    i++;
+                    setTimeout(type, speed);
+                } else {
+                    if (callback) setTimeout(callback, 700);
+                    else cursorEl.style.display = "none"; // Hide cursor after typing completes
+                }
+            }
+            type();
+        }
+
+        function startTyping() {
+            let pIndex = 0;
+            function typeNextParagraph() {
+                if (pIndex < paragraphText.length) {
+                    textEl.innerHTML += (pIndex > 0 ? "<br><br>" : ""); // Preserve formatting
+                    typeText(textEl, paragraphText[pIndex], 50, typeNextParagraph);
+                    pIndex++;
+                }
+            }
+            typeNextParagraph();
+        }
+
+        window.onload = startTyping;
+
+        // Cursor blinking effect
+        setInterval(() => {
+            cursorEl.style.visibility = (cursorEl.style.visibility === "hidden") ? "visible" : "hidden";
+        }, 500);
+    </script></body>
+</html>
+

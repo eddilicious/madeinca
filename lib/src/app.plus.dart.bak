@@ -1,0 +1,68 @@
+import 'package:flutter/material.dart';
+import 'package:webview_flutter_plus/webview_flutter_plus.dart';
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Camera WebView',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      home: const WebViewScreen(),
+    );
+  }
+}
+
+class WebViewScreen extends StatefulWidget {
+  const WebViewScreen({super.key});
+
+  @override
+  State<WebViewScreen> createState() => _WebViewScreenState();
+}
+
+class _WebViewScreenState extends State<WebViewScreen> {
+  late WebViewControllerPlus _controller;
+
+  @override
+  void initState() {
+    _controller = WebViewControllerPlus()
+      //..loadFlutterAssetWithServer('assets/index.html', localhostServer.port!)
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(const Color(0x00000000))
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageFinished: (url) {
+            _controller.getWebViewHeight().then((h) {
+              var height = int.parse(h.toString()).toDouble();
+              if (height != _height) {
+                setState(() {
+                  _height = height;
+                });
+              }
+            });
+          },
+        ),
+      )
+      ..loadFlutterAsset('assets/html/camera.html');
+    super.initState();
+  }
+
+  double _height = 0.001;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Camera WebView'),
+      ),
+      body: WebViewWidget(
+        controller : _controller,
+      ),
+    );
+  }
+}
+

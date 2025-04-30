@@ -1,0 +1,203 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:flutter/services.dart';
+import 'services/barcode_data_services.dart'; // Import the BarcodeDataServices
+import 'custom_progress_widget.dart'; // Import the CustomProgressIndicator widget
+import 'web_display_widget.dart'; // Import the WebDisplayWidget
+
+class CustomBarcodeScanner extends StatefulWidget {
+  const CustomBarcodeScanner({super.key});
+  @override
+  State<CustomBarcodeScanner> createState() => _CustomBarcodeScannerState();
+}
+
+class _CustomBarcodeScannerState extends State<CustomBarcodeScanner> {
+  ScanResult? scanResult;
+  bool _isLoading = true; // Add this state variable
+  final BarcodeDataServices _barcodeDataServices = BarcodeDataServices(); // Create an instance
+
+
+
+  var _productDetails = '';
+
+  static final _possibleFormats = BarcodeFormat.values.toList()
+    ..removeWhere((e) => e == BarcodeFormat.unknown);
+
+  List<BarcodeFormat> selectedFormats = [..._possibleFormats];
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(Duration.zero, () async {
+      setState(() {});
+      _scan(); // Call the _scan function when the CustomBarcodeScanner is loaded
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: _isLoading ? null: AppBar(title: const Text('Search Result',   style: TextStyle(
+                                                            fontSize: 20, // Slightly larger for elegance
+                                                            fontWeight: FontWeight.w600, // Semi-bold for a premium feel
+                                                            letterSpacing: 0.5, // Subtle spacing for a refined look
+                                                            color: Colors.black87, // Darker but not pure black (for a softer look)
+                                                          ),
+                                                        ),
+        actions : [GestureDetector(
+          onTap: _scan,
+          child: Container(
+            margin: const EdgeInsets.all(8), // Spacing around the button
+            decoration: BoxDecoration(
+              color: Colors.black.withValues(alpha: 0.05), // Soft background
+              borderRadius: BorderRadius.circular(8), // Rounded edges
+              border: Border.all(
+                color: Colors.black.withValues(alpha: 0.1), // Darker border color
+                width: 1, // Border thickness
+              ),
+            ),
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.arrow_back_ios_new, color: Colors.black, size: 18),
+                ],
+              ),
+            ),
+          ),
+        )],
+      
+      
+      ),
+      body: _isLoading
+        ? const CustomProgressWidget() // Show loading indicator if _isLoading is true
+        : Stack(children: [
+            // Full-screen InAppWebView displayed as the bottom child
+            WebDisplayWidget(jsonData: _productDetails),
+            // Left 30% GestureDetector overlay, placed on top of WebDisplayWidget
+            Align(
+              alignment: Alignment.centerLeft,
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.3, // 30% of the screen width
+                height: double.infinity,
+                child: RawGestureDetector(
+                  gestures: {
+                    HorizontalDragGestureRecognizer:
+                        GestureRecognizerFactoryWithHandlers<HorizontalDragGestureRecognizer>(
+                      () => HorizontalDragGestureRecognizer(),
+                      (HorizontalDragGestureRecognizer instance) {
+                        instance.onEnd = (details) {
+                          if (details.primaryVelocity! > 400) {
+                            _scan(); // Perform the action for a left swipe
+                          }
+                        };
+                      },
+                    ),
+                  },
+                  child: Container(color: Colors.transparent), // Transparent to allow gestures
+                ),
+              ),
+            ),
+        ]),
+    );
+  }
+
+  Future<void> _queryDetails(String barcode) async {
+    setState(() {
+      _isLoading = true; // Show loading indicator
+    });
+
+    // Fetch barcode data
+    try {
+      _productDetails = await _barcodeDataServices.fetchBarcodeData(barcode);
+      debugPrint('Product Details: $_productDetails');
+    } catch (e) {
+      debugPrint('Error: $e');
+    }
+
+    setState(() {
+      _isLoading = false; // Hide loading indicator and show result
+    });
+
+    // Implement your process here
+  }
+
+  Future<void> _scan() async {
+    ScanResult result = ScanResult(rawContent: '------------------'); // Default value
+    try {
+      do {
+        result = await BarcodeScanner.scan(
+          options: ScanOptions(
+            strings: {
+              'cancel': '', // Hide cancel button. But it does not stop user swipe back
+              'flash_on': _flashOnController.text,
+              'flash_off': _flashOffController.text,
+            },
+            restrictFormat: selectedFormats,
+            useCamera: _selectedCamera,
+            autoEnableFlash: _autoEnableFlash,
+            android: AndroidOptions(
+              aspectTolerance: _aspectTolerance,
+              useAutoFocus: _useAutoFocus,
+            ),
+          ),
+        );
+      } 
+      while (result.rawContent.length < 12 || result.rawContent.length > 13);
+      
+      debugPrint('Scanned: ${result.rawContent}');
+
+
+      setState(() {
+        scanResult = result;
+      });
+    } on PlatformException catch (e) {
+      setState(() {
+        result = ScanResult(
+          rawContent: e.code == BarcodeScanner.cameraAccessDenied
+              ? 'The user did not grant the camera permission!'
+              : 'Unknown error: $e',
+        );
+      });
+    }
+
+    if (result.rawContent.length < 15) { 
+      await _queryDetails(result.rawContent); // Pass the scanned barcode to _queryDetails
+    } else {
+      setState(() {
+        _isLoading = false; // Hide loading indicator and show result
+      });
+    }
+  }
+}
+
+
+/*
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Message Box'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('dv: ${details.velocity.pixelsPerSecond.dx}'),
+              Text('dx: ${details.primaryVelocity}'),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+
+*/

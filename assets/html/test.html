@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 48px;
+      margin: 20px;
+    }
+    .container {
+      border: 1px solid #ccc;
+      padding: 20px;
+      border-radius: 10px;
+      background-color: #f9f9f9;
+      font-size: 48px; /* Increase font size 10 times */
+    }
+    .item {
+      margin-bottom: 20px;
+    }
+    .item img {
+      max-width: 100%; /* Ensure the image does not exceed the container width */
+      height: auto; /* Maintain aspect ratio */
+    }
+    .item h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+    .item p {
+      margin: 5px 0;
+    }
+    .offers {
+      margin-top: 10px;
+    }
+    .offer {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div><table><tr><td>Product Display</td></tr></table></div>
+  <div class="container" id="json-container"></div>
+  <script>
+    function displayJSONContent(data) {
+      var container = document.getElementById('json-container');
+      var windowWidth = window.innerWidth; // Get the width of the window
+      var imageWidth = windowWidth * 0.3; // Set image width to 80% of the window width
+
+      data.items.forEach(function(item) {
+        var itemDiv = document.createElement('div');
+        itemDiv.className = 'item';
+
+        var title = document.createElement('h2');
+        title.textContent = item.title;
+        itemDiv.appendChild(title);
+
+        var description = document.createElement('p');
+        description.textContent = item.description;
+        itemDiv.appendChild(description);
+
+        var imagesDiv = document.createElement('div');
+        item.images.forEach(function(imageUrl) {
+          var img = document.createElement('img');
+          img.src = imageUrl;
+          img.style.width = imageWidth + 'px'; // Set the image width
+          img.style.height = 'auto'; // Maintain aspect ratio
+          imagesDiv.appendChild(img);
+        });
+        itemDiv.appendChild(imagesDiv);
+
+        var offersDiv = document.createElement('div');
+        offersDiv.className = 'offers';
+        item.offers.forEach(function(offer) {
+          var offerDiv = document.createElement('div');
+          offerDiv.className = 'offer';
+
+          var offerTitle = document.createElement('p');
+          offerTitle.textContent = 'Merchant: ' + offer.merchant + ', Price: ' + offer.price + ', Condition: ' + offer.condition;
+          offerDiv.appendChild(offerTitle);
+
+          var offerLink = document.createElement('a');
+          offerLink.href = offer.link;
+          offerLink.textContent = 'View Offer';
+          offerLink.target = '_blank';
+          offerDiv.appendChild(offerLink);
+
+          offersDiv.appendChild(offerDiv);
+        });
+        itemDiv.appendChild(offersDiv);
+
+        container.appendChild(itemDiv);
+      });
+    }
+
+    // Listen for messages from Flutter
+// message event listener
+    window.addEventListener("message", (event) => {
+      var container = document.getElementById('json-container');
+      var jsonData = JSON.parse(event.data);
+      displayJSONContent(jsonData);
+    });
+  </script>
+</body>
+</html>
