@@ -58,8 +58,9 @@ class WebDisplayWidget extends StatelessWidget {
               controller.evaluateJavascript(source: """
                 window.postMessage($jsonDataString, '*');
               """);
-            } else if (Platform.isIOS) {
+            } else {
               controller.evaluateJavascript(source: """
+                alert($jsonDataString);
                 displayJsonData($jsonDataString);
               """);
             }
