@@ -370,8 +370,11 @@
     // Listen for messages from Flutter
 // message event listener
     window.addEventListener("message", (event) => {
+	displayJsonData(event.data);
+    });
+    function displayJsonData(jsonString) {
       var container = document.getElementById('json-container');
-      var jsonData = JSON.parse(event.data);
+      var jsonData = JSON.parse(jsonString);
       if (jsonData === undefined) {
         container.innerHTML = "Invalid data received";
         return;
@@ -387,7 +390,7 @@
       }
       
       viewConfetti(jsonData);
-    });
+    }
   </script>
 </body>
 </html>
