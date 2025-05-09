@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'dart:convert'; // Import jsonEncode
+import 'dart:io'; // Add platform switch
 
 class WebDisplayWidget extends StatelessWidget {
   final String jsonData;
@@ -52,9 +53,16 @@ class WebDisplayWidget extends StatelessWidget {
             if (linkClicked) return;
             
             final jsonDataString = jsonEncode(jsonData); // Convert JSON data to string
-            controller.evaluateJavascript(source: """
-              window.postMessage($jsonDataString, '*');
-            """);
+
+            if (Platform.isAndroid) {
+              controller.evaluateJavascript(source: """
+                window.postMessage($jsonDataString, '*');
+              """);
+            } else if (Platform.isIOS) {
+              controller.evaluateJavascript(source: """
+                displayJsonData($jsonDataString);
+              """);
+            }
           },
         ),
       ),
