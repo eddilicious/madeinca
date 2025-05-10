@@ -26,6 +26,7 @@ class WebDisplayWidget extends StatelessWidget {
         child: InAppWebView(
           initialFile: 'assets/html/product_display.html', // Ensure the correct file path
           initialSettings: InAppWebViewSettings(
+            javaScriptEnabled: true,
             useShouldOverrideUrlLoading: true,
             mediaPlaybackRequiresUserGesture: false,
           ),
