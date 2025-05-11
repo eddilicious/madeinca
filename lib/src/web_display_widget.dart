@@ -52,7 +52,7 @@ class _WebDisplayWidgetState extends State<WebDisplayWidget> {
             controller.addJavaScriptHandler(
               handlerName: 'sendJsonData',
               callback: (args) {
-                return jsonData;
+                return widget.jsonData;
               },
             );
           },
