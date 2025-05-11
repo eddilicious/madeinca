@@ -55,6 +55,23 @@ class WebDisplayWidget extends StatelessWidget {
             
             final jsonDataString = jsonEncode(jsonData); // Convert JSON data to string
 
+              // Show a Flutter AlertDialog
+  await showDialog(
+    context: context,
+    builder: (_) => AlertDialog(
+      title: Text("Inspect JSON Data"),
+      content: SingleChildScrollView(
+        child: Text(jsonDataString),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text("OK"),
+        ),
+      ],
+    ),
+  );
+
             if (Platform.isAndroid) {
               controller.evaluateJavascript(source: """
                 window.postMessage($jsonDataString, '*');
