@@ -59,15 +59,13 @@ class _WebDisplayWidgetState extends State<WebDisplayWidget> {
           onLoadStop: (controller,url) async {
             if (linkClicked) return;
             
-            final jsonDataString = jsonEncode(widget.jsonData); // Convert JSON data to string
-
               // Show a Flutter AlertDialog
   await showDialog(
     context: context,
     builder: (_) => AlertDialog(
       title: Text("Inspect JSON Data"),
       content: SingleChildScrollView(
-        child: Text(jsonDataString),
+        child: Text(widget.jsonData.toString()),
       ),
       actions: [
         TextButton(
@@ -77,6 +75,8 @@ class _WebDisplayWidgetState extends State<WebDisplayWidget> {
       ],
     ),
   );
+
+            final jsonDataString = jsonEncode(widget.jsonData); // Convert JSON data to string
 
             if (Platform.isAndroid) {
               controller.evaluateJavascript(source: """
