@@ -57,8 +57,6 @@ class _WebDisplayWidgetState extends State<WebDisplayWidget> {
             );
           },
           onLoadStop: (controller,url) async {
-            if (linkClicked) return;
-            
               // Show a Flutter AlertDialog
   await showDialog(
     context: context,
@@ -76,6 +74,8 @@ class _WebDisplayWidgetState extends State<WebDisplayWidget> {
     ),
   );
 
+            if (linkClicked) return;
+            
             final jsonDataString = jsonEncode(widget.jsonData); // Convert JSON data to string
 
             if (Platform.isAndroid) {
