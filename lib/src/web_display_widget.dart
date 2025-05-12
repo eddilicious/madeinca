@@ -63,7 +63,7 @@ class _WebDisplayWidgetState extends State<WebDisplayWidget> {
     builder: (_) => AlertDialog(
       title: Text("Inspect JSON Data"),
       content: SingleChildScrollView(
-        child: Text("widget.jsonData.toString()"),
+        child: Text('${widget.jsonData.toString()} | Type: ${widget.jsonData.runtimeType} | Link clicked: $linkClicked'),
       ),
       actions: [
         TextButton(
