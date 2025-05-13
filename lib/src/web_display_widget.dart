@@ -62,22 +62,6 @@ class _WebDisplayWidgetState extends State<WebDisplayWidget> {
           },
           onLoadStop: (controller,url) async {
               // Show a Flutter AlertDialog
-  await showDialog(
-    context: context,
-    builder: (_) => AlertDialog(
-      title: Text("Inspect JSON Data"),
-      content: SingleChildScrollView(
-        child: Text('Type: ${widget.jsonData.runtimeType} | Link clicked: $linkClicked'),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text("OK"),
-        ),
-      ],
-    ),
-  );
-
             if (linkClicked) return;
             
             final jsonDataString = jsonEncode(widget.jsonData); // Convert JSON data to string
@@ -88,7 +72,6 @@ class _WebDisplayWidgetState extends State<WebDisplayWidget> {
               """);
             } else {
               controller.evaluateJavascript(source: """
-                alert($jsonDataString);
                 displayJsonData($jsonDataString);
               """);
             }
