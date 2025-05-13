@@ -39,7 +39,7 @@ class _WebDisplayWidgetState extends State<WebDisplayWidget> {
           shouldOverrideUrlLoading: (controller, navigationAction) async {
             var uri = navigationAction.request.url;
             debugPrint("####################################   Opening: $uri");
-            if (uri?.path.contains('product_display.html') == true)) {
+            if (uri?.path.contains('product_display.html') == true) {
               setState(() {
                 linkClicked = true;
               });
