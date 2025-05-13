@@ -39,24 +39,11 @@ class _WebDisplayWidgetState extends State<WebDisplayWidget> {
           shouldOverrideUrlLoading: (controller, navigationAction) async {
             var uri = navigationAction.request.url.toString();
             debugPrint("####################################   Opening: $uri");
-
-  await showDialog(
-    context: context,
-    builder: (_) => AlertDialog(
-      title: Text("Override Uri Loading"),
-      content: SingleChildScrollView(
-        child: Text('Uri: $uri | Link clicked: $linkClicked'),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text("OK"),
-        ),
-      ],
-    ),
-  );
-
-            linkClicked = true; // Set to true when a link is clicked
+            if (uri?.path.contains('product_display.html') == true)) {
+              setState(() {
+                linkClicked = true;
+              });
+            }
 
             return NavigationActionPolicy.ALLOW; // Let the WebView open links
           },
