@@ -64,7 +64,8 @@ class _WebDisplayWidgetState extends State<WebDisplayWidget> {
               // Show a Flutter AlertDialog
             if (linkClicked) return;
             
-            final jsonDataString = jsonEncode(widget.jsonData); // Convert JSON data to string
+            // widget.jsonData is a string
+            final jsonDataString = widget.jsonData; // Convert JSON data to string
 
             if (Platform.isAndroid) {
               controller.evaluateJavascript(source: """
