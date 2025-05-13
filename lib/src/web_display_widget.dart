@@ -37,7 +37,7 @@ class _WebDisplayWidgetState extends State<WebDisplayWidget> {
             mediaPlaybackRequiresUserGesture: false,
           ),
           shouldOverrideUrlLoading: (controller, navigationAction) async {
-            var uri = navigationAction.request.url.toString();
+            var uri = navigationAction.request.url;
             debugPrint("####################################   Opening: $uri");
             if (uri?.path.contains('product_display.html') == true)) {
               setState(() {
