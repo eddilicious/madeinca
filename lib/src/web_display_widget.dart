@@ -65,7 +65,7 @@ class _WebDisplayWidgetState extends State<WebDisplayWidget> {
             if (linkClicked) return;
             
             // widget.jsonData is a string
-            final jsonDataString = widget.jsonData; // Convert JSON data to string
+            final jsonDataString = jsonEncode(widget.jsonData); // Convert JSON data to string
 
             if (Platform.isAndroid) {
               controller.evaluateJavascript(source: """
