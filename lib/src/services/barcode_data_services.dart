@@ -51,14 +51,14 @@ class BarcodeDataServices extends ChangeNotifier {
     desc = await queryAppServer(barcode);
 
     if (desc.isEmpty) {
+      desc = await OpenfoodfactsService().fetchBarcodeService(barcode);
+    }
+    
+    if (desc.isEmpty) {
       desc = await fetchBarcodeService(barcode);
       if (desc.isNotEmpty) type = 'product';
     }
 
-    if (desc.isEmpty) {
-      desc = await OpenfoodfactsService().fetchBarcodeService(barcode);
-    }
-    
     // Save the barcode data to the app server
     if (desc.isEmpty && GS1Service().online) {
       desc = await GS1Service().fetchBarcodeService(barcode);
@@ -138,12 +138,14 @@ class BarcodeDataServices extends ChangeNotifier {
               }
             }
 
-            if (origin.isEmpty && !jsonData.containsKey("made")) {
+            if (origin.isEmpty) {
               // Decode JSON string to a Map
               origin = getCountry(barcode);
-              jsonData["made"] = origin;
             }
 
+            if (origin.isNotEmpty) {
+              jsonData["made"] = origin;
+            }
             desc = jsonEncode(jsonData);
 
             return desc;
@@ -172,7 +174,7 @@ class BarcodeDataServices extends ChangeNotifier {
       'Accept': 'application/json',
     };
 
-    String jsonBusy = '{"code": "ERROR","title": "Connection Busy","description": "Public product database is busy. Please try again later."}';
+    // String jsonBusy = '{"code": "ERROR","title": "Connection Busy","description": "Public product database is busy. Please try again later."}';
 
     try {
       final response = await http.get(Uri.parse(url), headers: headers);
@@ -216,9 +218,10 @@ class BarcodeDataServices extends ChangeNotifier {
             ean = '0$ean'; // Prepend '0' for EAN-13 format
           }
         }
-
-        item0["made"] = getCountry(ean);
-        if (item0["title"].substring(item0["title"].length - 6).toLowerCase() == "canada") {    // || item0["title"].toLowerCase().endsWith("{imported from canada}")
+        if (!item0.containsKey("made") || item0["made"].toString().isEmpty) {
+          item0["made"] = getCountry(ean);
+        }
+        if (item0["title"].toLowerCase().contains('canada')) {    // || item0["title"].toLowerCase().endsWith("{imported from canada}")
           item0["made"] = "Canada"; // If no match is found
         }
 

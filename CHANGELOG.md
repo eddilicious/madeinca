@@ -21,3 +21,13 @@ v0.05
 v0.06
 - Change barcode_scan2 to mobile_scanner
 - Google Play Store release.
+v1.00
+- Change flutteer call javascript in page
+- App store release.
+v1.10
+- Change to product name contain 'Canada'
+- Add rate the app
+- reduce swipe gesture width to 15%
+- fix origin identification.
+- prioritize openfood data.
+

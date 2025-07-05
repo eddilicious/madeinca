@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'services/barcode_data_services.dart'; // Import the BarcodeDataServices
+import 'services/rate_app_services.dart'; // Import the RateAppService
 import 'custom_progress_widget.dart'; // Import the CustomProgressIndicator widget
 import 'web_display_widget.dart'; // Import the WebDisplayWidget
 
@@ -64,7 +65,7 @@ class _ResultScreenState extends State<ResultScreen> {
             Align(
               alignment: Alignment.centerLeft,
               child: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.3, // 30% of the screen width
+                width: MediaQuery.of(context).size.width * 0.15, // 15% of the screen width
                 height: double.infinity,
                 child: RawGestureDetector(
                   gestures: {
@@ -72,9 +73,16 @@ class _ResultScreenState extends State<ResultScreen> {
                         GestureRecognizerFactoryWithHandlers<HorizontalDragGestureRecognizer>(
                       () => HorizontalDragGestureRecognizer(),
                       (HorizontalDragGestureRecognizer instance) {
-                        instance.onEnd = (details) {
+                        instance.onEnd = (details) async {
                           if (details.primaryVelocity! > 400) {
-                             Navigator.pop(context); // Perform the action for a left swipe
+                            if (context.mounted) {
+                              await RateAppService.showRatePopupIfNeeded(context);
+                            }
+                            // after await, the widget might have been unmounted, it's no longer part of the widget tree
+                            // so context could be invalid or throw errors
+                            if (context.mounted && Navigator.canPop(context)) {
+                              Navigator.pop(context); // Perform the action for a left swipe
+                            }
                           }
                         };
                       },
