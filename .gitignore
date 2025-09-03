@@ -34,6 +34,7 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+linux/flutter/
 
 # iOS related
 ios/Pods/
@@ -44,6 +45,16 @@ ios/Flutter/Generated.xcconfig
 ios/Flutter/App.framework
 ios/Flutter/ephemeral/
 ios/build/
+
+# generated files
+**/generated_plugin_registrant.*
+**/generated_plugins.cmake
+**/GeneratedPluginRegistrant.swift
+linux/flutter/generated_plugin_registrant.*
+linux/flutter/generated_plugins.cmake
+windows/flutter/generated_plugin_registrant.*
+windows/flutter/generated_plugins.cmake
+macos/Flutter/GeneratedPluginRegistrant.swift
 
 # Xcode
 xcuserdata/

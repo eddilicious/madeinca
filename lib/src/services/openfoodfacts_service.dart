@@ -4,8 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-import 'app_server_services.dart';
-
 class OpenfoodfactsService {
   // Set up the class as a singleton
   static final OpenfoodfactsService _instance = OpenfoodfactsService._internal(); // ✅ Singleton instance
@@ -160,7 +158,7 @@ class OpenfoodfactsService {
         data['title'] = "${product['product_name'] ?? 'Unknown Product'} ${(product.containsKey('quantity') && product['quantity'] != '1') ? ' ${product['quantity']}' : ''}";
         data['brand'] = product['brands'] ?? 'Unknown Brand';
         if (product.containsKey('nutriments') && (product['nutriments'] as Map).isNotEmpty) {
-          data['description'] = '<h4>Nutritions</h4>' + generateNutritionTable(product['nutriments']);
+          data['description'] = '<h4>Nutritions</h4>${generateNutritionTable(product['nutriments'])}';
         } else if (product['nutriments'] is String) {
           data['description'] = product['nutriments'];
         } else {
@@ -256,11 +254,11 @@ class OpenfoodfactsService {
 
     // Extract unique keys
     Set<String> uniqueKeys = {};
-    nutriments.keys.forEach((key) {
+    for (final key in nutriments.keys) {
       if (!key.contains('_100g') && !key.contains('_serving') && !key.contains('_unit') && !key.contains('_value')) {
         uniqueKeys.add(key);
       }
-    });
+    }
 
     for (String key in uniqueKeys) {
       String unit = nutriments['${key}_unit'] ?? '';

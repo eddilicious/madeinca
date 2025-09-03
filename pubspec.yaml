@@ -75,6 +75,7 @@ flutter:
   assets:
     - assets/html/progress_animation.html
     - assets/html/product_display.html
+    - assets/html/deals_display.html
     - assets/html/splash_screen.html
     - assets/html/welcome_screen.html
     - assets/html/camera.html

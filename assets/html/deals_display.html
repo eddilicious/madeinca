@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Canadian Deals Aggregator</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+    }
+
+    body {
+      padding: 20px;
+      overflow-x: hidden; /* prevent sideways scrolling */
+      -webkit-font-smoothing: antialiased; /* improve font rendering */
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    #spinner {
+      position: fixed;       /* stay fixed on screen */
+      top: 0;                /* align to top */
+      left: 0;               /* align to left */
+      width: 100%;          /* full viewport width */
+      height: 100vh;         /* full viewport height */
+      background: rgba(255, 255, 255, 0.8); /* optional: semi-transparent background */
+      display: flex;         /* center the image */
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;         /* make sure it's on top */
+    }
+    .loading-svg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 33vw;   /* 1/3 of screen width */
+      max-width: 300px; /* optional: prevent it from getting too huge */
+      height: auto;  /* keep aspect ratio */
+    }
+    #feed-container {
+      margin-top: 20px;
+      scroll-snap-type: y proximity;  /* vertical snap */
+      overflow-y: auto;
+      width: 100%;               /* enable scrolling */
+      max-height: 100vh;               /* optional, full viewport height */
+    }
+    .error { color: red; margin-top: 20px; }
+
+    .feed-item {
+      scroll-snap-align: start;       /* snap to top of container */
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+
+    
+    .feed-title {
+      font-size: 5vw;
+      font-weight: bold;
+      color: #333;
+      line-height: 1.4;
+      background-color: #f0f2f5;  /* subtle light gray */
+      background: rgba(150, 100, 60, 0.1);;
+      padding: 8px 12px;
+      border-top-left-radius: 2px;
+      border-top-right-radius: 2px;
+      margin: 0 0 8px;  /* negative margin to stretch across card */
+      display: grid;
+      grid-template-rows: auto auto; /* two rows */
+    }
+
+    .feed-title .date-text {
+      font-weight: bold;
+      text-align: left;
+    }
+
+    .feed-title .date-text {
+      font-weight: normal;
+      font-size: 4.5vw;
+      text-align: right;
+    }
+
+    .feed-content {
+      font-size: 4.5vw;
+      color: #444;
+      background: rgba(200, 150, 100, 0.1);
+      line-height: 1.5;
+    }
+
+    .feed-content img {
+      max-width: 100%;
+      border-radius: 6px;
+      margin: 10px 0;
+    }
+    .feed-content a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    .feed-content a:hover, .feed-meta a:hover {
+      text-decoration: underline;
+    }
+    </style>
+</head>
+<body>
+  <!--h2>Latest Canadian Deals</h2-->
+  <div id="spinner" style="display: none;">
+    <img src="../gifs/bars-rotate-fade.svg" alt="Loading..." class="loading-svg"></div>
+  <div id="feed-container"></div>
+  <div id="errors" class="error"></div>
+
+  <script>
+    const feeds = [
+      { name: "SmartCanucks", url: "https://smartcanucks.ca/feed/" },
+      { name: "RedFlagDeals", url: "https://forums.redflagdeals.com/feed/forum/9" }
+    ];
+    const items = [];
+
+    var proxy = "https://api.allorigins.win/raw?url=";
+    proxy = "https://corsproxy.io/?";
+    const container = document.getElementById("feed-container");
+    const errorBox = document.getElementById("errors");
+
+    function toggleContent(id) {
+      var content = document.getElementById(id);
+
+      if (content.style.display === "none") {
+        // Hide all other content divs
+        var all = document.querySelectorAll("div[id^='content-']");
+        for (var i = 0; i < all.length; i++) {
+          all[i].style.display = "none";
+        }
+
+        // Show current one
+        content.style.display = "block";
+      } else {
+        // Hide current one
+        content.style.display = "none";
+      }
+    }
+
+    function fetchUrl(url) {
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+
+        // Set standard headers
+        xhr.setRequestHeader('Accept', 'text/html,application/json,application/xml,application/xhtml+xml');
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.setRequestHeader('Accept-Language', 'en-US,en;q=0.9');
+        xhr.setRequestHeader('Cache-Control', 'no-cache');
+        //xhr.setRequestHeader('Pragma', 'no-cache');
+        //xhr.setRequestHeader('Upgrade-Insecure-Requests', '1'); // sometimes ignored
+        //xhr.setRequestHeader('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3');
+
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              resolve(xhr.responseText);   // ✅ return response text here
+            } else {
+              alert("XHR done: " + xhr.status);
+              reject(new Error("XHR error " + xhr.status + ": " + xhr.statusText));
+            }
+          }
+        };
+
+        xhr.onerror = function () {
+          reject(new Error("Network error while fetching " + url));
+        };
+
+        xhr.ontimeout = function () {
+          console.log("Web request timed out:", url);
+        };
+        xhr.send();
+      });
+    }
+
+    async function loadCachedItems() {
+      try {
+        const text = await fetchUrl("http://madeinca.metasolutions.space/data/deal-items.json");
+        if (!text) return false;
+
+        const cachedItems = JSON.parse(text);
+
+        if (Array.isArray(cachedItems) && cachedItems.length > 0) {
+          // Parse date strings to Date objects
+          cachedItems.forEach(item => {
+            item.date = new Date(item.date);
+          });
+
+          items.push(...cachedItems);
+
+          const latestDate = items[0].date;
+          const now = new Date();
+          const fourHoursAgo = new Date(now.getTime() - 4 * 60 * 60 * 1000);
+          if (latestDate && latestDate > fourHoursAgo) {
+            console.log("Cached data is fresh, skipping fetch.");
+            return true; // Cached data is usable
+          }
+        }
+      } catch (err) {
+        console.warn("Failed to load cached JSON:", err);
+        errorBox.innerHTML += `<div>⚠️ Failed to load cached data: ${err.message}</div>`;
+      }
+
+      return false; // Cached data is missing, invalid, or stale
+    }
+
+    function fetchSmartcanuckItem(item) {
+      const rawDate = item.querySelector("pubDate")?.textContent ?? "";
+      const date = new Date(rawDate);
+
+      return {
+        source: "SmartCanucks",
+        title: item.querySelector("title")?.textContent ?? "",
+        link: item.querySelector("link")?.textContent ?? "",
+        date: isNaN(date.getTime()) ? null : date,
+        content:
+          item.getElementsByTagName("content:encoded")[0]?.textContent.replace(/target=["']?_blank["']?/gi, "") ??
+          item.querySelector("description")?.textContent.replace(/target=["']?_blank["']?/gi, "") ??
+          "",
+        id:
+          item.getElementsByTagName("post-id")[0]?.textContent ??
+          item.querySelector("guid")?.textContent ??
+          ""
+      };
+    }
+
+    function fetchRedflagdealsEntry(entry) {
+      const rawDate = entry.querySelector("published")?.textContent ?? "";
+      const date = new Date(rawDate);
+
+      return {
+        source: "RedFlagDeals",
+        title: entry.querySelector("title")?.textContent ?? "",
+        link: entry.querySelector("link")?.getAttribute("href") ?? "",
+        date: isNaN(date.getTime()) ? null : date,
+        content: entry.querySelector("content")?.textContent.replace(/target=["']?_blank["']?/gi, "") ?? "",
+        id: entry.querySelector("id")?.textContent ?? ""
+      };
+    }
+    
+    async function fetchFeed(source) {
+      try {
+        
+        const response = await fetch(proxy + encodeURIComponent(source.url));
+        const text = await response.text();
+        
+        const parser = new DOMParser();
+        const xml = parser.parseFromString(text, "application/xml");
+
+        if (source.name === "SmartCanucks") {
+          const itemNodes = xml.querySelectorAll("item");
+          itemNodes.forEach(itemNode => {
+            const item = fetchSmartcanuckItem(itemNode);
+            if (item) items.push(item);
+          });
+
+        } else if (source.name === "RedFlagDeals") {
+          const entryNodes = xml.querySelectorAll("entry");
+          entryNodes.forEach(entryNode => {
+            const item = fetchRedflagdealsEntry(entryNode);
+            if (item) items.push(item);
+          });
+        }
+
+        return;
+
+      } catch (e) {
+        console.error(`Error fetching ${source.name}:`, e);
+        errorBox.innerHTML += `⚠️ Error fetching ${source.name}: ${e.message}`;
+        return;
+      }
+    }
+
+    function saveItems() {
+      fetch('http://madeinca.metasolutions.space/api/save-deals.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(items)
+      })
+      .then(response => {
+        console.log('Save status:', response.status);  // 200 means OK
+      })
+      .catch(error => {
+        console.error('Error saving items:', error);
+      });
+    }
+
+    async function loadFeeds() {
+      items.length = 0; // clear existing items
+      document.getElementById("spinner").style.display = "block";
+
+      const hasFreshCache = await loadCachedItems();
+      if (hasFreshCache) {
+        renderItems();
+        document.getElementById("spinner").style.display = "none";
+        return; // Skip fetching if cache is fresh
+      }
+      await Promise.all(feeds.map(fetchFeed));
+      renderItems();
+      document.getElementById("spinner").style.display = "none";
+      saveItems();
+    }
+
+    function renderItems() {
+      if (items.length === 0) {
+        errorBox.innerHTML += `<div>⚠️ No deals loaded.</div>`;
+      }
+
+      // Sort by newest first
+      items.sort((a, b) => b.date - a.date);
+      
+      // Optional: Sort by title or date if available
+      items.forEach((item, index) => {
+        const el = document.createElement("div");
+        el.className = "feed-item";
+
+        const contentId = `content-${index}`;
+        const formattedDate = item.date.toDateString().slice(4).replace(" ", " ").replace(/(\d{1,2}) (20\d{2})/, "$1, $2");
+
+        el.innerHTML = `
+          <!--strong>${item.source}</strong-->
+          <div id="link-${index}" class="feed-title">
+            <span class="title-text">${item.title}</span>
+            <span class="date-text">${formattedDate || ''}</span>
+          </div>
+          <div id="${contentId}"  class="feed-content">
+            ${item.content || 'No additional content'}
+          </div>
+        `;
+
+        container.appendChild(el);
+      });
+    }
+
+    loadFeeds();
+  </script>
+</body>
+</html>

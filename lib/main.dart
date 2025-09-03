@@ -7,9 +7,10 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:upgrader/upgrader.dart';
 //import 'src/home_screen.dart'; // Import the HomeScreen widget
 import 'src/scanner_screen.dart'; // Import the BarcodeScannerWithOverlay widget
+import 'src/offers_screen.dart'; // Import the OffersScreen widget
 import 'src/services/app_server_services.dart'; // Import the AppServerService
 import 'src/services/device_info_services.dart';
-import 'src/services/gs1_service.dart'; // Import the AppServerService
+// import 'src/services/gs1_service.dart'; // Import the AppServerService
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -83,10 +84,20 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter App with Splash Screen',
+      title: 'Find Canadian Made',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.teal, // your main brand color
+          brightness: Brightness.light,
+        ),
+        useMaterial3: true,
       ),
+      routes: {
+        // '/location': (_) => const LocationScreen(),
+        '/offers': (_) => const OffersScreen(),
+        '/scanner': (_) => const ScannerScreen(),
+        // '/settings': (_) => const SettingsScreen(),
+      },
       home: UpgradeAlert( //checks the latest version from the App Store (iOS) or Play Store (Android).
         child: const SplashScreen(), // Set the SplashScreen as the initial screen
       ),
@@ -124,8 +135,8 @@ class _SplashScreenState extends State<SplashScreen> {
     isFirstLaunch = await DeviceInfoService().initialize();
     /// 3. Read the server instructions
     await readInstructions(); 
-    /// 4. Initialize GS1 services
-    await GS1Service().initialize();
+    /// 4. Initialize GS1 services, failed feed.
+    // await GS1Service().initialize();
 
     final elapsedTime = DateTime.now().difference(startTime);
     final remainingTime = Duration(seconds: 5) - elapsedTime;

@@ -11,7 +11,7 @@ class CustomProgressWidget extends StatelessWidget {
         width: double.infinity,
         height: double.infinity,
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.5),
+          color: Colors.black.withAlpha((0.5 * 255).round()),
           borderRadius: BorderRadius.circular(10),
         ),
         child: InAppWebView(
