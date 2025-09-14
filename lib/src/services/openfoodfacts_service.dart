@@ -306,7 +306,7 @@ class OpenfoodfactsService {
   }
 
   String findCountry(String input) {
-    if (input == null || input.isEmpty) {
+    if (input.isEmpty) {
       return '';
     }
 

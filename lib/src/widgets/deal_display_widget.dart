@@ -13,7 +13,6 @@ class DealDisplayWidget extends StatefulWidget {
 
 class _DealDisplayWidgetState extends State<DealDisplayWidget> {
   bool linkClicked = false; // Track if a link has been clicked
-  late final InAppWebViewController _controller;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +51,6 @@ class _DealDisplayWidgetState extends State<DealDisplayWidget> {
           },          
           onWebViewCreated: (controller) {
             // Send controller to parent if provided
-            _controller = controller;
             if (widget.onWebViewCreated != null) {
               widget.onWebViewCreated!(controller); // Notify parent
             }

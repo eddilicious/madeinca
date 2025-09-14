@@ -235,6 +235,12 @@
       const regex = /<\/?[a-z][\s\S]*>/i;
       return regex.test(content);  // Returns true if HTML tags are found
     }
+
+    // the purpose is to convert all Canadá, Cànadâ, Cänada, etc. to Canada
+    function removeAccents(str) {
+      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
+
     function displayProductContent(item) {
       // Show product div otherwise the child elements will not be rendered
       document.getElementById("product-detail").style.display = "block"; // Show div
@@ -334,7 +340,10 @@
           }
         }
 
-        if (json.made.toLowerCase() === "canada" || json.made.toLowerCase() === "ca") {
+        var made = removeAccents(json.made);
+        made = made.toLowerCase().trim();
+
+        if (made === "canada" || made === "ca") {
           if (contentDiv) contentDiv.textContent = 'Canada';
           document.body.className = 'maple'; // Apply Canadian theme
           checkInterval = setInterval(() => {
@@ -342,14 +351,14 @@
                 clearInterval(checkInterval); // Stop checking
                 startConfetti();
                 return;
-            }}, 500);  
-            return;    
-        } else if (json.made.toLowerCase() === "united states" || json.made.toLowerCase() === "us" || json.made.toLowerCase() === "usa") {
+            }}, 500);
+            return;
+        } else if (made === "united states" || made === "us" || made === "usa") {
           if (contentDiv) contentDiv.textContent = 'United States';
 
           startMean();
           return;
-        } else if (json.made.toLowerCase() != "idk") {
+        } else if (made != "idk") {
           if (contentDiv) contentDiv.innerHTML = json.made; 
           startIDK();
           return;

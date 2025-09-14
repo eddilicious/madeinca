@@ -33,7 +33,9 @@ class _DealTabWidgetState extends State<DealTabWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return PopScope(
+      canPop: false, // prevent route from being popped automatically
+      child: Scaffold(
       appBar: AppBar(title: const Text("Local Deals", style: TextStyle(
                                                           fontSize: 20, // Slightly larger for elegance
                                                           fontWeight: FontWeight.w600, // Semi-bold for a premium feel
@@ -81,6 +83,7 @@ class _DealTabWidgetState extends State<DealTabWidget> {
             ),
           ),
         ]),
+      ),
     );
   }
 

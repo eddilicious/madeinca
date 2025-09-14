@@ -30,4 +30,11 @@ v1.10
 - reduce swipe gesture width to 15%
 - fix origin identification.
 - prioritize openfood data.
+v1.20
+- Add hot deals tab
+- Massively changed widget structure and file locations
+- Remove system popping the app
+- Remove GS1 service on startup
+- Remove some strong mp3 in USA display
+- Add bottom navigation
 

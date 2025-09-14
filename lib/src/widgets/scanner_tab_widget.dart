@@ -27,7 +27,9 @@ class _ScannerTabWidgetState extends State<ScannerTabWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return PopScope(
+      canPop: false, // prevent route from being popped automatically
+      child: Scaffold(
 
       appBar: AppBar(title: Text("Scan Barcode", style: TextStyle(
                                                           fontSize: 20, // Slightly larger for elegance
@@ -68,6 +70,7 @@ class _ScannerTabWidgetState extends State<ScannerTabWidget> {
             ),
         ],
       ),
+    ),
     );
   }
 

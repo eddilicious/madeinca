@@ -66,7 +66,7 @@ class DeviceInfoService {
     });
 
     if (response != null) {
-      print("Server Response: $response");
+      //print("Server Response: $response");
       return response["success"];
     }
     return false;

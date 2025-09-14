@@ -90,14 +90,14 @@ class AppServerService {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print("Response: ${response.body}");
+        //print("Response: ${response.body}");
         return json.decode(response.body);
       } else {
-        print("POST request failed: ${response.statusCode}");
+        //print("POST request failed: ${response.statusCode}");
         return null;
       }
     } catch (e) {
-      print("POST request error: $e");
+      //print("POST request error: $e");
       return null;
     }
   }
